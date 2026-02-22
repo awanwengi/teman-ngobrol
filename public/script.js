@@ -56,9 +56,62 @@ async function sendMessage() {
         chatBox.scrollTop = chatBox.scrollHeight;
 
     } catch (err) {
+        // Hapus indikator mengetik jika masih ada
         const typingElement = document.getElementById(typingId);
         if (typingElement) typingElement.remove();
-        chatBox.innerHTML += `<div class="msg bot-msg" style="color: red;">Duh, otakku lagi loading.. coba lagi ya!</div>`;
+
+        // Ambil pesan error dari server jika ada
+        let errorMessage = "Duh, otakku lagi loading.. coba lagi ya!";
+        
+        // Menampilkan pesan error di chat box
+        const botTime = getCurrentTime();
+        chatBox.innerHTML += `
+            <div class="msg bot-msg" style="border: 1px solid #ff000033; background-color: #fff5f5;">
+                <span style="color: #d32f2f;"><b>Sistem:</b> Kuota gratis sudah habis atau server sibuk.</span>
+                <span class="chat-time">${botTime}</span>
+            </div>`;
+        
+        chatBox.scrollTop = chatBox.scrollHeight;n
+    }
+}
+
+// Inisialisasi Emoji Picker
+const pickerOptions = { 
+    onEmojiSelect: (emoji) => {
+        const input = document.getElementById('user-input');
+        input.value += emoji.native; // Tambahkan emoji ke input
+        input.focus();
+    },
+    theme: 'light',
+    set: 'apple' // Gaya emoji ala iPhone/WhatsApp
+};
+const picker = new EmojiMart.Picker(pickerOptions);
+const pickerContainer = document.getElementById('emoji-picker-container');
+pickerContainer.appendChild(picker);
+
+// Logika buka/tutup picker
+document.getElementById('emoji-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isVisible = pickerContainer.style.display === 'block';
+    pickerContainer.style.display = isVisible ? 'none' : 'block';
+});
+
+// Tutup picker jika klik di luar
+document.addEventListener('click', () => {
+    pickerContainer.style.display = 'none';
+});
+
+// Mencegah picker tertutup saat diklik di dalam picker itu sendiri
+pickerContainer.addEventListener('click', (e) => e.stopPropagation());
+
+//clear chat
+function clearChat() {
+    if (confirm("Kamu yakin mau menghapus semua percakapan?")) {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = ''; // Mengosongkan semua pesan
+        
+        // Opsional: Berikan pesan sambutan kembali
+        chatBox.innerHTML = `<div class="msg bot-msg">Chat telah dihapus. Ada yang bisa aku bantu lagi?<span class="chat-time">${getCurrentTime()}</span></div>`;
     }
 }
 

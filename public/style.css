@@ -16,6 +16,7 @@ body {
 }
 
 .chat-header {
+    position: relative;
     background-color: #075e54;
     color: white;
     padding: 10px 15px;
@@ -47,7 +48,14 @@ body {
     gap: 8px;
 }
 
-
+#emoji-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+    color: #667781; /* Warna ikon WA */
+}
 
 
 
@@ -91,10 +99,12 @@ body {
 }
 
 .input-area {
+   position: relative; /* Agar picker bisa diposisikan terhadap ini */
     background-color: #f0f0f0;
     padding: 10px;
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 5px;
 }
 
 input {
@@ -114,6 +124,20 @@ button {
     border-radius: 50%;
     cursor: pointer;
     font-size: 18px;
+}
+
+#clear-btn {
+    margin-left: auto; /* Mendorong tombol ke pojok kanan */
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    filter: grayscale(1) brightness(2); /* Membuat ikon emoji jadi putih/terang */
+    transition: transform 0.2s;
+}
+
+#clear-btn:hover {
+    transform: scale(1.2);
 }
 
 /* Gaya Gelembung Sedang Mengetik */

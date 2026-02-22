@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teman Ngobrol AI</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
 </head>
 <body>
 <div class="chat-container">
@@ -16,14 +17,17 @@
             <span class="name">Bestieku</span>
             <span class="status">Online</span>
         </div>
+        <button id="clear-btn" onclick="clearChat()" title="Hapus Semua Chat">🗑️</button>
     </div>
 
     <div id="chat-box"></div>
 
     <div class="input-area">
+        <button type="button" id="emoji-btn">😊</button>
         <input type="text" id="user-input" placeholder="Ketik pesan...">
         <button onclick="sendMessage()" id="send-btn">➤</button>
     </div>
+    <div id="emoji-picker-container" style="position: absolute; bottom: 70px; left: 10px; display: none; z-index: 1000;"></div>
 </div>       
     <script src="script.js"></script>
 </body>

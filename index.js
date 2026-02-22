@@ -24,9 +24,17 @@ app.post('/chat', async (req, res) => {
         res.json({ reply: response.text() });
     } catch (error) {
         console.error("--- ERROR DETAIL ---");
-        console.error(error.message);
-        res.status(500).json({ reply: "Duh, otakku lagi error 404 nih." });
+        // Cek jika error adalah karena kuota habis (429)
+        if (error.status === 429 || error.message.includes("429")) {
+            res.status(429).json({ 
+                reply: "Duh, kuota gratis harian aku sudah habis nih. Kita ngobrol lagi besok ya, atau coba beberapa saat lagi! 🙏" 
+            });
+        } else {
+            res.status(500).json({ 
+                reply: "Maaf, ada gangguan teknis. Coba cek koneksi internetmu ya!" 
+            });
     }
+}
 });
 
 const PORT = process.env.PORT || 3000;
