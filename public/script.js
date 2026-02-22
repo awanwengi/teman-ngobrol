@@ -1,16 +1,36 @@
 // Fungsi utama untuk mengirim pesan
+// Fungsi untuk mendapatkan waktu sekarang (HH:mm)
+function getCurrentTime() {
+    const now = new Date();
+    return now.getHours().toString().padStart(2, '0') + ':' + 
+           now.getMinutes().toString().padStart(2, '0');
+}
+
 async function sendMessage() {
     const input = document.getElementById('user-input');
     const chatBox = document.getElementById('chat-box');
-    const message = input.value.trim(); // Gunakan .trim() untuk menghilangkan spasi kosong di awal/akhir
+    const message = input.value.trim();
 
-    if (!message) return; // Jangan kirim pesan kosong
+    if (!message) return;
 
-    // Tampilkan pesan user
-    chatBox.innerHTML += `<div class="user"><b>Kamu:</b> ${message}</div>`;
-    input.value = ''; // Kosongkan input field setelah pesan terkirim
+    // Tambahkan pesan user dengan jam
+    const time = getCurrentTime();
+    chatBox.innerHTML += `
+        <div class="msg user-msg">
+            ${message}
+            <span class="chat-time">${time}</span>
+        </div>`;
     
-    // --- FITUR AUTO-SCROLL (dipanggil setelah pesan user) ---
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+// 2. Tampilkan indikator "Typing..."
+    const typingId = 'typing-' + Date.now(); // Buat ID unik
+    chatBox.innerHTML += `
+        <div id="${typingId}" class="typing">
+            Teman Ngobrol sedang mengetik
+            <span></span><span></span><span></span>
+        </div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
@@ -20,17 +40,25 @@ async function sendMessage() {
             body: JSON.stringify({ message })
         });
         const data = await response.json();
+
+// 3. Hapus indikator "Typing..."
+        const typingElement = document.getElementById(typingId);
+        if (typingElement) typingElement.remove();        
         
-        // Tampilkan jawaban bot
-        chatBox.innerHTML += `<div class="bot"><b>Gemini:</b> ${data.reply}</div>`;
+        // Tambahkan pesan bot dengan jam
+        const botTime = getCurrentTime();
+        chatBox.innerHTML += `
+            <div class="msg bot-msg">
+                ${data.reply}
+                <span class="chat-time">${botTime}</span>
+            </div>`;
         
-        // --- FITUR AUTO-SCROLL (dipanggil setelah pesan bot) ---
         chatBox.scrollTop = chatBox.scrollHeight;
 
     } catch (err) {
-        console.error("Error:", err);
-        chatBox.innerHTML += `<div class="bot" style="color: red;"><b>Gemini:</b> Maaf, ada masalah koneksi. Coba lagi ya!</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
+        const typingElement = document.getElementById(typingId);
+        if (typingElement) typingElement.remove();
+        chatBox.innerHTML += `<div class="msg bot-msg" style="color: red;">Duh, otakku lagi loading.. coba lagi ya!</div>`;
     }
 }
 
